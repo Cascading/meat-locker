@@ -1,6 +1,7 @@
 package meatlocker;
 
 import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.serialize.IntSerializer;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
@@ -16,7 +17,9 @@ public class TBaseSerializer extends Serializer {
     @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
         TBase thrift = (TBase) o;
         try {
-            byteBuffer.put(serializer.serialize(thrift));
+            byte[] serThrift = serializer.serialize(thrift);
+            IntSerializer.put(byteBuffer, serThrift.length, true);
+            byteBuffer.put(serThrift);
         } catch (TException e) {
             throw new RuntimeException(e);
         }
@@ -24,8 +27,10 @@ public class TBaseSerializer extends Serializer {
 
     @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
         try {
-            byte[] barr = new byte[byteBuffer.remaining()];
             TBase prototype = (TBase) tClass.newInstance();
+            int tSize = IntSerializer.get(byteBuffer, true);
+            byte[] barr = new byte[tSize];
+            byteBuffer.get(barr);
             deserializer.deserialize(prototype, barr);
             return (T) prototype;
         } catch (Exception e) {
