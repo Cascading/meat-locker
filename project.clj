@@ -1,7 +1,8 @@
 (defproject meat-locker "0.1.2"
   :source-path "src/clj"
   :java-source-path "src/jvm"
-  :description "Grab bag of Kryo Serializations."
+  :description "Grab bag of utilities for Cascading DSLs."
+  :repositories {"conjars" "http://conjars.org/repo/"}
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [com.googlecode/kryo "1.04"]]
   :dev-dependencies [[org.clojure/clojure "1.3.0"]
