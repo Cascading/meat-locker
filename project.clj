@@ -1,4 +1,4 @@
-(defproject meat-locker "0.1.1"
+(defproject meat-locker "0.1.2"
   :source-path "src/clj"
   :java-source-path "src/jvm"
   :description "Grab bag of Kryo Serializations."

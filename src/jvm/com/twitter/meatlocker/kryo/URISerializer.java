@@ -1,4 +1,4 @@
-package meatlocker;
+package com.twitter.meatlocker.kryo;
 
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.serialize.StringSerializer;
