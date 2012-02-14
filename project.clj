@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [com.googlecode/kryo "1.04"]]
   :dev-dependencies [[org.clojure/clojure "1.3.0"]
+                     [cascalog "1.9.0-wip3"]
                      [org.apache.thrift/libthrift "0.6.1"]
                      [com.google.protobuf/protobuf-java "2.4.0a"]
                      [org.apache.hadoop/hadoop-core "0.20.2-dev"]

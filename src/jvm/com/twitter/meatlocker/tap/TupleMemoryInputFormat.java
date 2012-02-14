@@ -2,12 +2,14 @@ package com.twitter.meatlocker.tap;
 
 import cascading.tuple.Tuple;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.serializer.Deserializer;
+import org.apache.hadoop.io.serializer.SerializationFactory;
+import org.apache.hadoop.io.serializer.Serializer;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.StringUtils;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWritable> {
@@ -51,9 +53,9 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
         }
 
         public boolean next(TupleWrapper k, NullWritable v) throws IOException {
-            if (pos >= tuples.size()) { return false; }
-            k.tuple = tuples.get(pos);
-            pos++;
+            if (pos >= tuples.size())
+                return false;
+            k.tuple = tuples.get(pos++);
             return true;
         }
 
@@ -80,24 +82,58 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
     }
 
     public InputSplit[] getSplits(JobConf jc, int i) throws IOException {
-        List<Tuple> tuples = (List<Tuple>) getObject(jc, TUPLES_PROPERTY);
+        List<Tuple> tuples = retrieveTuples(jc, TUPLES_PROPERTY);
         return new InputSplit[]{new TupleInputSplit(tuples.size())};
     }
 
     public RecordReader<TupleWrapper, NullWritable>
     getRecordReader(InputSplit is, JobConf jc, Reporter rprtr) throws IOException {
-        return new TupleRecordReader((List<Tuple>) getObject(jc, TUPLES_PROPERTY));
+        return new TupleRecordReader(retrieveTuples(jc, TUPLES_PROPERTY));
     }
 
 
-    public static void setObject(JobConf conf, String key, Object o) {
-        conf.set(key, StringUtils.byteToHexString(KryoService.serialize(o)));
+    public static void storeTuples(JobConf conf, String key, List<Tuple> tuples) {
+        SerializationFactory factory = new SerializationFactory(conf);
+        Serializer<Tuple> serializer = factory.getSerializer(Tuple.class);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        try {
+            serializer.open(stream);
+            for(Tuple tuple: tuples) {
+                serializer.serialize(tuple);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String confVal = tuples.size() + ":" + StringUtils.byteToHexString(stream.toByteArray());
+        conf.set(key, confVal);
     }
 
-    public static Object getObject(JobConf conf, String key) {
+    public static List<Tuple> retrieveTuples(JobConf conf, String key) {
         String s = conf.get(key);
-        if (s == null) { return null; }
-        byte[] val = StringUtils.hexStringToByte(s);
-        return KryoService.deserialize(val);
+        if (s == null)
+            return null;
+        
+        String[] pieces = s.split(":");
+        int size = Integer.valueOf(pieces[0]);
+        byte[] val = StringUtils.hexStringToByte(pieces[1]);
+
+        SerializationFactory factory = new SerializationFactory(conf);
+        Deserializer<Tuple> deserializer = factory.getDeserializer(Tuple.class);
+        ByteArrayInputStream stream = new ByteArrayInputStream(val);
+
+
+        List<Tuple> ret = new ArrayList<Tuple>();
+        try {
+            deserializer.open(stream);
+            for(int i = 0; i < size; i++) {
+                ret.add(deserializer.deserialize(null));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
     }
 }
