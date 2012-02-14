@@ -102,6 +102,7 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
             for(Tuple tuple: tuples) {
                 serializer.serialize(tuple);
             }
+            serializer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -123,13 +124,13 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
         Deserializer<Tuple> deserializer = factory.getDeserializer(Tuple.class);
         ByteArrayInputStream stream = new ByteArrayInputStream(val);
 
-
         List<Tuple> ret = new ArrayList<Tuple>();
         try {
             deserializer.open(stream);
             for(int i = 0; i < size; i++) {
                 ret.add(deserializer.deserialize(null));
             }
+            deserializer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
