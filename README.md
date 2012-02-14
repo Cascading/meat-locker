@@ -7,5 +7,5 @@ Assorted serializers for Kryo.
 Add the following to project.clj:
 
 ```clojure
-[meat-locker "0.1.1"]
+[meat-locker "0.1.2"]
 ```
