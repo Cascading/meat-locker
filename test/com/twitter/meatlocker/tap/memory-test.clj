@@ -41,8 +41,8 @@
 
 (defn memory-tap
   ([tuples] (memory-tap Fields/ALL tuples))
-  ([fields-in tuples]
-     (let [tuples (->> tuples
+  ([fields-in tuple-seq]
+     (let [tuples (->> tuple-seq
                        (clojure.core/map #(Util/coerceToTuple %))
                        (ArrayList.))]
        (MemorySourceTap. tuples (fields fields-in)))))
