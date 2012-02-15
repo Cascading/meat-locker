@@ -3,8 +3,7 @@
   :java-source-path "src/jvm"
   :description "Grab bag of utilities for Cascading DSLs."
   :repositories {"conjars" "http://conjars.org/repo/"}
-  :dependencies [[org.clojure/clojure "1.3.0"]
-                 [com.googlecode/kryo "1.04"]]
+  :dependencies [[com.googlecode/kryo "1.04"]]
   :dev-dependencies [[org.clojure/clojure "1.3.0"]
                      [cascalog "1.9.0-wip3"]
                      [org.apache.thrift/libthrift "0.6.1"]
