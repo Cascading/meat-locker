@@ -1,12 +1,12 @@
 package com.twitter.meatlocker.tap;
 
 import cascading.tuple.Tuple;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.serializer.Deserializer;
 import org.apache.hadoop.io.serializer.SerializationFactory;
 import org.apache.hadoop.io.serializer.Serializer;
 import org.apache.hadoop.mapred.*;
-import org.apache.hadoop.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.List;
 
 public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWritable> {
 
+    public static final String ENCODING = "US-ASCII";
     public static final String TUPLES_PROPERTY = "memory.format.tuples";
 
     public static class TupleInputSplit implements InputSplit {
@@ -92,6 +93,28 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
     }
 
 
+    public static String encodeBytes(byte[] bytes) {
+        String byteString = null;
+        try {
+            byteString = new String(Base64.encodeBase64(bytes), "US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return byteString;
+    }
+
+    public static byte[] decodeBytes(String str) {
+        byte[] decoded = null;
+        try {
+            byte[] bytes = str.getBytes(ENCODING);
+            decoded = Base64.decodeBase64(bytes);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return decoded;
+    }
+
+
     public static void storeTuples(JobConf conf, String key, List<Tuple> tuples) {
         SerializationFactory factory = new SerializationFactory(conf);
         Serializer<Tuple> serializer = factory.getSerializer(Tuple.class);
@@ -107,7 +130,7 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
             throw new RuntimeException(e);
         }
 
-        String confVal = tuples.size() + ":" + StringUtils.byteToHexString(stream.toByteArray());
+        String confVal = tuples.size() + ":" + encodeBytes(stream.toByteArray());
         conf.set(key, confVal);
     }
 
@@ -118,7 +141,7 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
         
         String[] pieces = s.split(":");
         int size = Integer.valueOf(pieces[0]);
-        byte[] val = StringUtils.hexStringToByte(pieces[1]);
+        byte[] val = decodeBytes(pieces[1]);
 
         SerializationFactory factory = new SerializationFactory(conf);
         Deserializer<Tuple> deserializer = factory.getDeserializer(Tuple.class);
