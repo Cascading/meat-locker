@@ -114,7 +114,6 @@ public class TupleMemoryInputFormat implements InputFormat<TupleWrapper, NullWri
         return decoded;
     }
 
-
     public static void storeTuples(JobConf conf, String key, List<Tuple> tuples) {
         SerializationFactory factory = new SerializationFactory(conf);
         Serializer<Tuple> serializer = factory.getSerializer(Tuple.class);
