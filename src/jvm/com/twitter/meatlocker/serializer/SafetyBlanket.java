@@ -28,14 +28,14 @@ public class SafetyBlanket<T> extends Configured implements Serialization<T> {
         boolean isFirst = true;
 
         for (String serialization : serializations) {
-            if (!isFirst)
-                builder.append(",");
-            isFirst = false;
-
-            if (encountered)
+            if (encountered) {
+                if (!isFirst)
+                    builder.append(",");
+                isFirst = false;
                 builder.append(serialization);
+            }
 
-            if (serialization.equals(this.getClass().toString()))
+            if (serialization.equals(this.getClass().getName()))
                 encountered = true;
         }
 
@@ -64,11 +64,11 @@ public class SafetyBlanket<T> extends Configured implements Serialization<T> {
 
     public Serializer<T> getSerializer(Class<T> aClass) {
         Serializer<T> factorySerializer = factory.getSerializer(aClass);
-        return (factorySerializer == null) ? factorySerializer : wrapped.getSerializer(aClass);
+        return (factorySerializer != null) ? factorySerializer : wrapped.getSerializer(aClass);
     }
 
     public Deserializer<T> getDeserializer(Class<T> aClass) {
         Deserializer<T> factoryDeserializer = factory.getDeserializer(aClass);
-        return (factoryDeserializer == null) ? factoryDeserializer : wrapped.getDeserializer(aClass);
+        return (factoryDeserializer != null) ? factoryDeserializer : wrapped.getDeserializer(aClass);
     }
 }
