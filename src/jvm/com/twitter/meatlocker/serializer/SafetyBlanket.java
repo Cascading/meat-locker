@@ -1,8 +1,6 @@
 package com.twitter.meatlocker.serializer;
 
-import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.serializer.Deserializer;
 import org.apache.hadoop.io.serializer.Serialization;
 import org.apache.hadoop.io.serializer.SerializationFactory;
@@ -10,18 +8,21 @@ import org.apache.hadoop.io.serializer.Serializer;
 import org.apache.hadoop.mapred.JobConf;
 
 /** User: sritchie Date: 2/16/12 Time: 2:24 PM */
-public class SafetyBlanket<T> extends Configured implements Serialization<T> {
+public class SafetyBlanket<T> implements Serialization<T> {
     public static final String IO_SERIALIZATIONS = "io.serializations";
-    Serialization<T> wrapped;
     SerializationFactory factory;
+    Configuration conf;
 
-    public SafetyBlanket(Serialization<T> wrapped) {
-        this.wrapped = wrapped;
+    public SafetyBlanket(Configuration conf, Class<? extends Serialization> wrapped) {
+        Configuration config = (conf != null) ? conf : new JobConf();
+        this.conf = processConf(config, wrapped);
     }
 
-    public void processConf(Configuration conf) {
+    public static Configuration processConf(Configuration oldConf, Class klass) {
+        Configuration conf = new Configuration(oldConf);
         // This key won't ever be null, since we know that THIS serialization is registered.
-        String[] serializations = conf.get(IO_SERIALIZATIONS).split(",");
+        String serString = conf.get(IO_SERIALIZATIONS);
+        String[] serializations = serString.split(",");
 
         StringBuilder builder = new StringBuilder();
         boolean encountered = false;
@@ -35,40 +36,28 @@ public class SafetyBlanket<T> extends Configured implements Serialization<T> {
                 builder.append(serialization);
             }
 
-            if (serialization.equals(this.getClass().getName()))
+            if (serialization.equals(klass.getName()))
                 encountered = true;
         }
 
-        conf.set(IO_SERIALIZATIONS, builder.toString());
-    }
+        String newVal = builder.toString();
 
-    @Override public void setConf( Configuration conf ) {
-        processConf(conf);
-        if (wrapped instanceof Configurable)
-            ((Configurable) wrapped).setConf(conf);
-        else
-            super.setConf(conf);
-    }
-
-    @Override public Configuration getConf() {
-        if( super.getConf() == null )
-            setConf( new JobConf() );
-        return (wrapped instanceof Configurable) ? ((Configurable) wrapped).getConf() : super.getConf();
+        // If the serialization simply wasn't present, set the old value.
+        conf.set(IO_SERIALIZATIONS, newVal.equals("") ? serString : newVal);
+        return conf;
     }
 
     public boolean accept(Class<?> aClass) {
         if (factory == null)
-            factory = new SerializationFactory(getConf());
-        return (factory.getSerialization(aClass) != null || wrapped.accept(aClass));
+            factory = new SerializationFactory(conf);
+        return factory.getSerialization(aClass) != null;
     }
 
     public Serializer<T> getSerializer(Class<T> aClass) {
-        Serializer<T> factorySerializer = factory.getSerializer(aClass);
-        return (factorySerializer != null) ? factorySerializer : wrapped.getSerializer(aClass);
+        return factory.getSerializer(aClass);
     }
 
     public Deserializer<T> getDeserializer(Class<T> aClass) {
-        Deserializer<T> factoryDeserializer = factory.getDeserializer(aClass);
-        return (factoryDeserializer != null) ? factoryDeserializer : wrapped.getDeserializer(aClass);
+        return factory.getDeserializer(aClass);
     }
 }
