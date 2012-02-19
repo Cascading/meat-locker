@@ -6,7 +6,7 @@ import org.apache.hadoop.io.serializer.Serialization;
 import org.apache.hadoop.io.serializer.Serializer;
 
 /** User: sritchie Date: 2/16/12 Time: 4:55 PM */
-public abstract class TimidSerialization<T> extends Configured implements Serialization<T> {
+public class TimidSerialization<T> extends Configured implements Serialization<T> {
     SafetyBlanket<T> blanket;
 
     public boolean accept(Class<?> aClass) {
