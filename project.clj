@@ -1,4 +1,4 @@
-(defproject meat-locker "0.1.4"
+(defproject com.twitter/meat-locker "0.1.4"
   :source-path "src/clj"
   :java-source-path "src/jvm"
   :description "Grab bag of utilities for Cascading DSLs."
