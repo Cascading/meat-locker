@@ -1,9 +1,6 @@
 (ns com.twitter.meatlocker.tap.memory-test
-  (:use cascalog.api
-        [cascalog.workflow :only (fields)])
   (:require [clojure.string :as s])
-  (:import [cascalog Util]
-           [java.util ArrayList]
+  (:import [java.util ArrayList]
            [com.twitter.meatlocker.tap MemorySourceTap]
            [cascading.tuple Fields]
            [cascading.flow.hadoop HadoopFlowProcess]
@@ -14,7 +11,6 @@
 (def defaults
   {"io.serializations"
    (s/join "," ["org.apache.hadoop.io.serializer.WritableSerialization"
-                "cascading.tuple.hadoop.BytesSerialization"
                 "cascading.tuple.hadoop.TupleSerialization"])})
 
 (def mk-props
@@ -39,10 +35,12 @@
     (doall (for [wrapper (iterator-seq it)]
              (into [] (.getTuple wrapper))))))
 
-(defn memory-tap
-  ([tuples] (memory-tap Fields/ALL tuples))
-  ([fields-in tuple-seq]
-     (let [tuples (->> tuple-seq
-                       (clojure.core/map #(Util/coerceToTuple %))
-                       (ArrayList.))]
-       (MemorySourceTap. tuples (fields fields-in)))))
+(comment
+  "TODO: Implement coerceToTuple and fields."
+  (defn memory-tap
+    ([tuples] (memory-tap Fields/ALL tuples))
+    ([fields-in tuple-seq]
+       (let [tuples (->> tuple-seq
+                         (map #(Util/coerceToTuple %))
+                         (ArrayList.))]
+         (MemorySourceTap. tuples (fields fields-in))))))
