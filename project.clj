@@ -4,7 +4,7 @@
   :description "Grab bag of utilities for Cascading DSLs."
   :repositories {"conjars" "http://conjars.org/repo/"}
   :dependencies [[com.googlecode/kryo "1.04"]]
-  :dev-dependencies [[org.clojure/clojure "1.3.0"]
+  :dev-dependencies [[org.clojure/clojure "1.2.1"]
                      [org.apache.thrift/libthrift "0.6.1"]
                      [com.google.protobuf/protobuf-java "2.4.0a"]
                      [org.apache.hadoop/hadoop-core "0.20.2-dev"]
