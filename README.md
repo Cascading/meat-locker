@@ -1,5 +1,7 @@
 # meat-locker
 
+[![Build Status](https://secure.travis-ci.org/sritchie/meat-locker.png?branch=master)](http://travis-ci.org/sritchie/meat-locker)
+
 Assorted serializers for Kryo.
 
 ## Usage
