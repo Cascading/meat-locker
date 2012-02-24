@@ -17,15 +17,14 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.RecordReader;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public class MemorySourceTap extends SourceTap<HadoopFlowProcess, JobConf, RecordReader, OutputCollector> {
-    public static class MemorySourceScheme extends Scheme<HadoopFlowProcess, JobConf, RecordReader, OutputCollector, Object[], Void> {
+public class MemorySourceTap extends SourceTap<HadoopFlowProcess, JobConf, RecordReader> {
+    public static class MemorySourceScheme extends Scheme<HadoopFlowProcess, JobConf, RecordReader, Void, Object[], Void> {
 
         private List<Tuple> tuples;
         private String id;
@@ -80,7 +79,7 @@ public class MemorySourceTap extends SourceTap<HadoopFlowProcess, JobConf, Recor
         }
 
         @Override
-        public void sink(HadoopFlowProcess flowProcess, SinkCall<Void, OutputCollector> sinkCall ) throws IOException {
+        public void sink(HadoopFlowProcess flowProcess, SinkCall<Void, Void> sinkCall ) throws IOException {
             throw new UnsupportedOperationException("Not supported.");
         }
 
