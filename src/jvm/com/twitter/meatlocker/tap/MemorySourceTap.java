@@ -120,7 +120,7 @@ public class MemorySourceTap extends SourceTap<HadoopFlowProcess, JobConf, Recor
         if (input != null)
             return new TupleEntrySchemeIterator( flowProcess, getScheme(), new RecordReaderIterator( input ) );
 
-        JobConf conf = flowProcess.getJobConf();
+        JobConf conf = new JobConf( flowProcess.getJobConf() );
 
         return new TupleEntrySchemeIterator(flowProcess, getScheme(),
             new MultiRecordReaderIterator(flowProcess, this, conf), "MemoryTap: " + getIdentifier());
