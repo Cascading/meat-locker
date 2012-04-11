@@ -1,19 +1,20 @@
 package com.twitter.meatlocker.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serialize.StringSerializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
-import java.nio.ByteBuffer;
+import java.net.URI;
 
 /** User: sritchie Date: 2/9/12 Time: 2:53 PM */
-public class URISerializer extends Serializer {
+public class URISerializer implements Serializer<java.net.URI> {
 
-    @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
-        StringSerializer.put(byteBuffer, o.toString());
+    public void write(Kryo kryo, Output output, URI uri) {
+        output.writeString(uri.toString());
     }
 
-    @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
-        String s = StringSerializer.get(byteBuffer);
-        return (T) java.net.URI.create(s);
+    public URI read(Kryo kryo, Input input, Class<URI> uriClass) {
+        return URI.create(input.readString());
     }
 }
