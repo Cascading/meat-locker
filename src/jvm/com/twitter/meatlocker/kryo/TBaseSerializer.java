@@ -1,40 +1,39 @@
 package com.twitter.meatlocker.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serialize.IntSerializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 
-import java.nio.ByteBuffer;
-
 /** User: sritchie Date: 2/9/12 Time: 2:54 PM */
-public class TBaseSerializer extends Serializer {
+public class TBaseSerializer implements Serializer<TBase> {
     TSerializer serializer  = new TSerializer();
     TDeserializer deserializer  = new TDeserializer();
 
-    @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
-        TBase thrift = (TBase) o;
+    public void write(Kryo kryo, Output output, TBase tBase) {
         try {
-            byte[] serThrift = serializer.serialize(thrift);
-            IntSerializer.put(byteBuffer, serThrift.length, true);
-            byteBuffer.put(serThrift);
+            byte[] serThrift = serializer.serialize(tBase);
+            output.writeInt(serThrift.length, true);
+            output.writeBytes(serThrift);
         } catch (TException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
+    public TBase read(Kryo kryo, Input input, Class<TBase> tBaseClass) {
         try {
-            TBase prototype = (TBase) tClass.newInstance();
-            int tSize = IntSerializer.get(byteBuffer, true);
+            TBase prototype = tBaseClass.newInstance();
+            int tSize = input.readInt(true);
             byte[] barr = new byte[tSize];
-            byteBuffer.get(barr);
+            input.readBytes(barr);
             deserializer.deserialize(prototype, barr);
-            return (T) prototype;
+            return prototype;
         } catch (Exception e) {
-            throw new RuntimeException("Could not create " + tClass, e);
+            throw new RuntimeException("Could not create " + tBaseClass, e);
         }
     }
 }
