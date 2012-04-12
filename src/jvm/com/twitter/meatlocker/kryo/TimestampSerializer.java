@@ -1,23 +1,23 @@
 package com.twitter.meatlocker.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serialize.LongSerializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
-import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 
 /** User: sritchie Date: 2/9/12 Time: 2:53 PM */
-public class TimestampSerializer extends Serializer {
+public class TimestampSerializer implements Serializer<Timestamp> {
 
-    @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
-        Timestamp timestamp = (Timestamp) o;
-        LongSerializer.put(byteBuffer, timestamp.getTime(), true);
-        LongSerializer.put(byteBuffer, timestamp.getNanos(), true);
+    public void write(Kryo kryo, Output output, Timestamp timestamp) {
+        output.writeLong(timestamp.getTime(), true);
+        output.writeInt(timestamp.getNanos(), true);
     }
 
-    @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
-        Timestamp ts = new Timestamp(LongSerializer.get(byteBuffer, true));
-        ts.setNanos((int) LongSerializer.get(byteBuffer, true));
-        return (T) ts;
+    public Timestamp read(Kryo kryo, Input input, Class<Timestamp> timestampClass) {
+        Timestamp ts = new Timestamp(input.readLong(true));
+        ts.setNanos(input.readInt(true));
+        return ts;
     }
 }
