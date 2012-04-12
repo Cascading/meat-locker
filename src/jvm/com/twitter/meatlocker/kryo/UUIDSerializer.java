@@ -1,20 +1,21 @@
 package com.twitter.meatlocker.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serialize.LongSerializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
 
 /** User: sritchie Date: 2/9/12 Time: 2:53 PM */
-public class UUIDSerializer extends Serializer {
-    @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
-        UUID uuid = (UUID) o;
-        LongSerializer.put(byteBuffer, uuid.getMostSignificantBits(), false);
-        LongSerializer.put(byteBuffer, uuid.getLeastSignificantBits(), false);
+public class UUIDSerializer implements Serializer<UUID> {
+
+    public void write(Kryo kryo, Output output, UUID uuid) {
+        output.writeLong(uuid.getMostSignificantBits(), false);
+        output.writeLong(uuid.getLeastSignificantBits(), false);
     }
 
-    @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
-        return (T) new UUID(LongSerializer.get(byteBuffer, false), LongSerializer.get(byteBuffer, false));
+    public UUID read(Kryo kryo, Input input, Class<UUID> uuidClass) {
+        return new UUID(input.readLong(false), input.readLong(false));
     }
 }

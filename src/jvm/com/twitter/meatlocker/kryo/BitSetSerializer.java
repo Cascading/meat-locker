@@ -1,35 +1,33 @@
 package com.twitter.meatlocker.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serialize.BooleanSerializer;
-import com.esotericsoftware.kryo.serialize.IntSerializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
-import java.nio.ByteBuffer;
 import java.util.BitSet;
 
 /** User: sritchie Date: 2/9/12 Time: 2:54 PM */
-public class BitSetSerializer extends Serializer {
-    BooleanSerializer booleanSerializer  = new BooleanSerializer();
+public class BitSetSerializer implements Serializer<BitSet> {
 
-    @Override public void writeObjectData(ByteBuffer byteBuffer, Object o) {
-        BitSet bs = (BitSet) o;
-        int len = bs.length();
+    public void write(Kryo kryo, Output output, BitSet bitSet) {
+        int len = bitSet.length();
 
-        IntSerializer.put(byteBuffer, len, true);
+        output.writeInt(len, true);
 
         for(int i = 0; i < len; i++) {
-            booleanSerializer.writeObjectData(byteBuffer, bs.get(i));
+            output.writeBoolean(bitSet.get(i));
         }
     }
 
-    @Override public <T> T readObjectData(ByteBuffer byteBuffer, Class<T> tClass) {
-        int len = IntSerializer.get(byteBuffer, true);
+    public BitSet read(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
+        int len = input.readInt(true);
         BitSet ret = new BitSet(len);
 
         for(int i = 0; i < len; i++) {
-            ret.set(i, booleanSerializer.readObjectData(byteBuffer, boolean.class));
+            ret.set(i, input.readBoolean());
         }
 
-        return (T) ret;
+        return ret;
     }
 }

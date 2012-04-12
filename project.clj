@@ -1,9 +1,9 @@
-(defproject com.twitter/meat-locker "0.1.7"
+(defproject com.twitter/meat-locker "0.2.0"
   :source-path "src/clj"
   :java-source-path "src/jvm"
   :description "Grab bag of utilities for Cascading DSLs."
   :repositories {"conjars" "http://conjars.org/repo/"}
-  :dependencies [[com.googlecode/kryo "1.04"]]
+  :dependencies [[com.esotericsoftware.kryo/kryo "2.02"]]
   :dev-dependencies [[midje "1.3.1" :exclusions [org.clojure/clojure]]
                      [org.clojure/clojure "1.2.1"]
                      [org.apache.thrift/libthrift "0.6.1"]
