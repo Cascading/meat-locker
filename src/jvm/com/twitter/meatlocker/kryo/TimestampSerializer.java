@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.sql.Timestamp;
 
 /** User: sritchie Date: 2/9/12 Time: 2:53 PM */
-public class TimestampSerializer implements Serializer<Timestamp> {
+public class TimestampSerializer extends Serializer<Timestamp> {
 
     public void write(Kryo kryo, Output output, Timestamp timestamp) {
         output.writeLong(timestamp.getTime(), true);

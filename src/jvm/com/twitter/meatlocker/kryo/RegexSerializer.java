@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.util.regex.Pattern;
 
 /** User: sritchie Date: 2/1/12 Time: 10:21 AM */
-public class RegexSerializer implements Serializer<Pattern> {
+public class RegexSerializer extends Serializer<Pattern> {
 
     public void write(Kryo kryo, Output output, Pattern pattern) {
         output.writeString(pattern.pattern());

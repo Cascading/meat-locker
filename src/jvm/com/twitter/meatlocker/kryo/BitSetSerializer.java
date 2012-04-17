@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.util.BitSet;
 
 /** User: sritchie Date: 2/9/12 Time: 2:54 PM */
-public class BitSetSerializer implements Serializer<BitSet> {
+public class BitSetSerializer extends Serializer<BitSet> {
 
     public void write(Kryo kryo, Output output, BitSet bitSet) {
         int len = bitSet.length();

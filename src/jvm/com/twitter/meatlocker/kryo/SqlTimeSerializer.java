@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.sql.Time;
 
 /** User: sritchie Date: 2/9/12 Time: 2:52 PM */
-public class SqlTimeSerializer implements Serializer<Time> {
+public class SqlTimeSerializer extends Serializer<Time> {
 
     public void write(Kryo kryo, Output output, Time time) {
         output.writeLong(time.getTime(), true);

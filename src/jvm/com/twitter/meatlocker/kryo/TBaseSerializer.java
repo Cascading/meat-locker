@@ -10,7 +10,7 @@ import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 
 /** User: sritchie Date: 2/9/12 Time: 2:54 PM */
-public class TBaseSerializer implements Serializer<TBase> {
+public class TBaseSerializer extends Serializer<TBase> {
     TSerializer serializer  = new TSerializer();
     TDeserializer deserializer  = new TDeserializer();
 

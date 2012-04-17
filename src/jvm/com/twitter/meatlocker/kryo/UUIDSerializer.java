@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.util.UUID;
 
 /** User: sritchie Date: 2/9/12 Time: 2:53 PM */
-public class UUIDSerializer implements Serializer<UUID> {
+public class UUIDSerializer extends Serializer<UUID> {
 
     public void write(Kryo kryo, Output output, UUID uuid) {
         output.writeLong(uuid.getMostSignificantBits(), false);
