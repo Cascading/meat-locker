@@ -1,4 +1,4 @@
-(defproject com.twitter/meat-locker "0.2.1"
+(defproject com.twitter/meat-locker "0.2.2-SNAPSHOT"
   :source-path "src/clj"
   :java-source-path "src/jvm"
   :description "Serializers for Kryo."
