@@ -10,11 +10,13 @@ import java.util.regex.Pattern;
 /** User: sritchie Date: 2/1/12 Time: 10:21 AM */
 public class RegexSerializer extends Serializer<Pattern> {
 
+    @Override
     public void write(Kryo kryo, Output output, Pattern pattern) {
         output.writeString(pattern.pattern());
     }
 
-    public Pattern read(Kryo kryo, Input input, Class<Pattern> patternClass) {
+    @Override
+    public Pattern create(Kryo kryo, Input input, Class<Pattern> patternClass) {
         return Pattern.compile(input.readString());
     }
 }

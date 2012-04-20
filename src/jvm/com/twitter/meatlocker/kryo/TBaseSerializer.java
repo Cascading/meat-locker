@@ -14,6 +14,7 @@ public class TBaseSerializer extends Serializer<TBase> {
     TSerializer serializer  = new TSerializer();
     TDeserializer deserializer  = new TDeserializer();
 
+    @Override
     public void write(Kryo kryo, Output output, TBase tBase) {
         try {
             byte[] serThrift = serializer.serialize(tBase);
@@ -24,7 +25,8 @@ public class TBaseSerializer extends Serializer<TBase> {
         }
     }
 
-    public TBase read(Kryo kryo, Input input, Class<TBase> tBaseClass) {
+    @Override
+    public TBase create(Kryo kryo, Input input, Class<TBase> tBaseClass) {
         try {
             TBase prototype = tBaseClass.newInstance();
             int tSize = input.readInt(true);

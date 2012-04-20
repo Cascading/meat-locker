@@ -10,6 +10,7 @@ import java.util.BitSet;
 /** User: sritchie Date: 2/9/12 Time: 2:54 PM */
 public class BitSetSerializer extends Serializer<BitSet> {
 
+    @Override
     public void write(Kryo kryo, Output output, BitSet bitSet) {
         int len = bitSet.length();
 
@@ -20,7 +21,8 @@ public class BitSetSerializer extends Serializer<BitSet> {
         }
     }
 
-    public BitSet read(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
+    @Override
+    public BitSet create(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
         int len = input.readInt(true);
         BitSet ret = new BitSet(len);
 

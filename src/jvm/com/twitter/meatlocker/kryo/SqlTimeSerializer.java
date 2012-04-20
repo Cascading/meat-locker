@@ -10,11 +10,13 @@ import java.sql.Time;
 /** User: sritchie Date: 2/9/12 Time: 2:52 PM */
 public class SqlTimeSerializer extends Serializer<Time> {
 
+    @Override
     public void write(Kryo kryo, Output output, Time time) {
         output.writeLong(time.getTime(), true);
     }
 
-    public Time read(Kryo kryo, Input input, Class<Time> timeClass) {
+    @Override
+    public Time create(Kryo kryo, Input input, Class<Time> timeClass) {
         return new Time(input.readLong(true));
     }
 }
