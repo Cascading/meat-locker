@@ -7,7 +7,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 import java.util.UUID;
 
-/** User: sritchie Date: 2/9/12 Time: 2:53 PM */
 public class UUIDSerializer extends Serializer<UUID> {
 
     @Override
@@ -16,8 +15,7 @@ public class UUIDSerializer extends Serializer<UUID> {
         output.writeLong(uuid.getLeastSignificantBits(), false);
     }
 
-    @Override
-    public UUID create(Kryo kryo, Input input, Class<UUID> uuidClass) {
+    @Override public UUID read(Kryo kryo, Input input, Class<UUID> uuidClass) {
         return new UUID(input.readLong(false), input.readLong(false));
     }
 }
