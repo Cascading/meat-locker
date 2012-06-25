@@ -1,9 +1,8 @@
-(defproject com.twitter/meat-locker "0.2.1"
+(defproject com.twitter/meat-locker "0.3.0"
   :source-path "src/clj"
   :java-source-path "src/jvm"
   :description "Serializers for Kryo."
-  :repositories {"conjars" "http://conjars.org/repo/"}
-  :dependencies [[com.twitter/kryo "2.04"]]
+  :dependencies [[com.esotericsoftware.kryo/kryo "2.16"]]
   :dev-dependencies [[midje "1.3.1" :exclusions [org.clojure/clojure]]
                      [org.clojure/clojure "1.2.1"]
                      [org.apache.thrift/libthrift "0.6.1"]
