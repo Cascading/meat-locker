@@ -7,7 +7,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 import java.sql.Date;
 
-/** User: sritchie Date: 2/9/12 Time: 2:52 PM */
 public class SqlDateSerializer extends Serializer<Date> {
 
     @Override
@@ -16,7 +15,7 @@ public class SqlDateSerializer extends Serializer<Date> {
     }
 
     @Override
-    public Date create(Kryo kryo, Input input, Class<Date> dateClass) {
+    public Date read(Kryo kryo, Input input, Class<Date> dateClass) {
         return new Date(input.readLong(true));
     }
 }

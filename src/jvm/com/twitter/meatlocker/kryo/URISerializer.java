@@ -7,7 +7,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 import java.net.URI;
 
-/** User: sritchie Date: 2/9/12 Time: 2:53 PM */
 public class URISerializer extends Serializer<java.net.URI> {
 
     @Override
@@ -16,7 +15,7 @@ public class URISerializer extends Serializer<java.net.URI> {
     }
 
     @Override
-    public URI create(Kryo kryo, Input input, Class<URI> uriClass) {
+    public URI read(Kryo kryo, Input input, Class<URI> uriClass) {
         return URI.create(input.readString());
     }
 }

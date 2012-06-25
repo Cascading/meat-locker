@@ -7,7 +7,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 import java.sql.Timestamp;
 
-/** User: sritchie Date: 2/9/12 Time: 2:53 PM */
 public class TimestampSerializer extends Serializer<Timestamp> {
 
     @Override
@@ -17,7 +16,7 @@ public class TimestampSerializer extends Serializer<Timestamp> {
     }
 
     @Override
-    public Timestamp create(Kryo kryo, Input input, Class<Timestamp> timestampClass) {
+    public Timestamp read(Kryo kryo, Input input, Class<Timestamp> timestampClass) {
         Timestamp ts = new Timestamp(input.readLong(true));
         ts.setNanos(input.readInt(true));
         return ts;
