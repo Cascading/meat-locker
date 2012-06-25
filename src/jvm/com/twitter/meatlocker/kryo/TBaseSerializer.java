@@ -9,7 +9,6 @@ import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 
-/** User: sritchie Date: 2/9/12 Time: 2:54 PM */
 public class TBaseSerializer extends Serializer<TBase> {
     TSerializer serializer  = new TSerializer();
     TDeserializer deserializer  = new TDeserializer();
@@ -26,7 +25,7 @@ public class TBaseSerializer extends Serializer<TBase> {
     }
 
     @Override
-    public TBase create(Kryo kryo, Input input, Class<TBase> tBaseClass) {
+    public TBase read(Kryo kryo, Input input, Class<TBase> tBaseClass) {
         try {
             TBase prototype = tBaseClass.newInstance();
             int tSize = input.readInt(true);
